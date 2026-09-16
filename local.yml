@@ -30,38 +30,38 @@
        shell: /bin/bash
        create_home: true
 
-  - name: Allow the admin group access to sudo without a password
-    ansible.builtin.copy:
-      content: "%{{ admin_group }} ALL=(ALL) NOPASSWD: ALL\n"
-      dest: /etc/sudoers.d/99-ansible
-      owner: root
-      group: root
-      mode: "0440"
-      validate: "visudo -cf %s"
+   - name: Allow the admin group access to sudo without a password
+     ansible.builtin.copy:
+       content: "%{{ admin_group }} ALL=(ALL) NOPASSWD: ALL\n"
+       dest: /etc/sudoers.d/99-ansible
+       owner: root
+       group: root
+       mode: "0440"
+       validate: "visudo -cf %s"
 
-  - name: Write a message of the day
-    ansible.builtin.copy:
-      content: |
-        **********
-        {{ ansible_facts['hostname'] }} is managed by ansible-pull
-        {{ ansible_facts['distribution'] }} {{ ansible_facts['distribution_version'] }}
-        Last applied: {{ ansible_date_time.iso8601 }}
-        **********
-      dest: /etc/motd
-      owner: root
-      group: root
-      mode: "0644"
+   - name: Write a message of the day
+     ansible.builtin.copy:
+       content: |
+         **********
+         {{ ansible_facts['hostname'] }} is managed by ansible-pull
+         {{ ansible_facts['distribution'] }} {{ ansible_facts['distribution_version'] }}
+         Last applied: {{ ansible_date_time.iso8601 }}
+         **********
+       dest: /etc/motd
+       owner: root
+       group: root
+       mode: "0644"
 
-  - name: Make sure a service is enabled and running
-    ansible.builtin.service:
-      name: "{{ managed_service }}"
-      state: started
-      enabled: true
+   - name: Make sure a service is enabled and running
+     ansible.builtin.service:
+       name: "{{ managed_service }}"
+       state: started
+       enabled: true
 
-  - name: Schedule ansible-pull to run every 30 minutes
-    ansible.builtin.cron:
-      name: ansible-pull
-      user: root
-      minute: "*/30"
-      job: "/usr/bin/ansible-pull -o -U {{ ansible_pull_repo }} >> /var/log/ansible-pull.log
-      cron_file: ansible-pull
+   - name: Schedule ansible-pull to run every 30 minutes
+     ansible.builtin.cron:
+       name: ansible-pull
+       user: root
+       minute: "*/30"
+       job: "/usr/bin/ansible-pull -o -U {{ ansible_pull_repo }} >> /var/log/ansible-pull.log
+       cron_file: ansible-pull
