@@ -10,10 +10,10 @@
 
   tasks:
 
-   - name: Install packages and keep them updates
-      ansible.builtin.package:
-        name: "{{ packages }}"
-        state: latest
+   - name: Install packages and keep them updated
+     ansible.builtin.package:
+       name: "{{ packages }}"
+       state: latest
 
    - name: Set the system timezone
      ansible.builtin.file:
